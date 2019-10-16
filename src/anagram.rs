@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::hash::{Hash, Hasher};
 use std::iter::FromIterator;
 
 #[derive(Debug)]
@@ -7,15 +8,21 @@ pub enum PhraseError {
   NotPhrase,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone, Eq)]
 pub struct Phrase<'a> {
   has_errors: bool,
   original: &'a str,
   word_counts: HashMap<char, u32>,
 }
 
+impl Hash for Phrase<'_> {
+  fn hash<H: Hasher>(&self, state: &mut H) {
+    self.original.hash(state);
+  }
+}
+
 impl<'a> Phrase<'a> {
-  fn new(original: &'a str) -> Self {
+  fn new(original: &str) -> Self {
     Phrase {
       has_errors: false,
       original: "test",
@@ -52,11 +59,28 @@ impl<'a> Phrase<'a> {
   }
 
   fn get_anagrams(&self, dictionary: &HashSet<&str>) -> Vec<HashSet<&str>> {
-    // TODO: implement recursive function, that uses all other helper methods.
-    let mut expected_anagram: Vec<HashSet<&str>> = Vec::new();
-    expected_anagram.push(["matita", "latina"].iter().cloned().collect());
-    expected_anagram.push(["ama", "latitanti"].iter().cloned().collect());
-    expected_anagram
+    let dictionary: HashSet<Phrase> = dictionary
+      .iter()
+      .map(|d| Phrase::new(d))
+      .filter(|d| self.is_candidate_for_anagram(d))
+      .collect();
+
+    let dictionary_ref: HashSet<&Phrase> = HashSet::from_iter(dictionary.iter());
+    self
+      .clone()
+      .get_recursive_anagrams(&dictionary_ref, HashSet::new())
+      .iter()
+      .map(|c| c.iter().map(|p| p.original).collect())
+      .collect()
+  }
+
+  fn get_recursive_anagrams(
+    &self,
+    dictionary: &HashSet<&Phrase>,
+    candidates: HashSet<&Phrase>,
+  ) -> Vec<HashSet<&Phrase>> {
+    let anagrams: Vec<HashSet<&Phrase>> = Vec::new();
+    anagrams
   }
 
   fn is_exhausted(&self) -> bool {
@@ -122,15 +146,6 @@ mod tests {
 
   #[test]
   fn it_should_raise_error_if_overflow() {
-    let mut word_counts = HashMap::new();
-    word_counts.insert('t', 0);
-    word_counts.insert('e', 0);
-    word_counts.insert('s', 1);
-    let expected_phrase = Phrase {
-      has_errors: true,
-      original: "test",
-      word_counts: word_counts,
-    };
     let mut phrase = Phrase::new("test");
     assert_eq!(true, phrase.decrement(&Phrase::new("tettt")).is_err());
   }
