@@ -67,7 +67,6 @@ impl<'a> Phrase<'a> {
 
     let dictionary_ref: HashSet<&Phrase> = HashSet::from_iter(dictionary.iter());
     self
-      .clone()
       .get_recursive_anagrams(&dictionary_ref, HashSet::new())
       .iter()
       .map(|c| c.iter().map(|p| p.original).collect())
