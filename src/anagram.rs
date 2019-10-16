@@ -52,10 +52,11 @@ impl<'a> Phrase<'a> {
   }
 
   fn get_anagrams(&self, dictionary: &HashSet<&str>) -> Vec<HashSet<&str>> {
+    // TODO: implement recursive function, that uses all other helper methods.
     let mut expected_anagram: Vec<HashSet<&str>> = Vec::new();
     expected_anagram.push(["matita", "latina"].iter().cloned().collect());
     expected_anagram.push(["ama", "latitanti"].iter().cloned().collect());
-    return expected_anagram;
+    expected_anagram
   }
 
   fn is_exhausted(&self) -> bool {
