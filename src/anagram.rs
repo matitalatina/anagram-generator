@@ -8,15 +8,15 @@ pub enum AnagramError {
 }
 
 #[derive(PartialEq, Debug)]
-pub struct Phrase<'a> {
+pub struct Anagram<'a> {
   has_errors: bool,
   original: &'a str,
   word_counts: HashMap<char, u32>,
 }
 
-impl<'a> Phrase<'a> {
+impl<'a> Anagram<'a> {
   fn new(original: &'a str) -> Self {
-    Phrase {
+    Anagram {
       has_errors: false,
       original: "test",
       word_counts: original.chars().fold(HashMap::new(), |mut acc, c| {
@@ -26,7 +26,7 @@ impl<'a> Phrase<'a> {
     }
   }
 
-  fn decrement(&mut self, phrase: &Phrase) -> Result<&Self, AnagramError> {
+  fn decrement(&mut self, phrase: &Anagram) -> Result<&Self, AnagramError> {
     for (c, counter) in self.word_counts.iter_mut() {
       let old_counter = *counter;
       let count_to_decrement = *phrase.word_counts.get(c).unwrap_or(&0);
@@ -46,7 +46,7 @@ impl<'a> Phrase<'a> {
 
 #[cfg(test)]
 mod tests {
-  use crate::anagram::Phrase;
+  use crate::anagram::Anagram;
   use std::collections::HashMap;
 
   #[test]
@@ -60,12 +60,12 @@ mod tests {
     word_counts.insert('t', 2);
     word_counts.insert('e', 1);
     word_counts.insert('s', 1);
-    let expected_phrase = Phrase {
+    let expected_phrase = Anagram {
       has_errors: false,
       original: "test",
       word_counts: word_counts,
     };
-    assert_eq!(expected_phrase, Phrase::new("test"))
+    assert_eq!(expected_phrase, Anagram::new("test"))
   }
 
   #[test]
@@ -74,14 +74,16 @@ mod tests {
     word_counts.insert('t', 0);
     word_counts.insert('e', 0);
     word_counts.insert('s', 1);
-    let expected_phrase = Phrase {
+    let expected_phrase = Anagram {
       has_errors: false,
       original: "test",
       word_counts: word_counts,
     };
     assert_eq!(
       expected_phrase,
-      *Phrase::new("test").decrement(&Phrase::new("tet")).unwrap(),
+      *Anagram::new("test")
+        .decrement(&Anagram::new("tet"))
+        .unwrap(),
     )
   }
 
@@ -91,28 +93,28 @@ mod tests {
     word_counts.insert('t', 0);
     word_counts.insert('e', 0);
     word_counts.insert('s', 1);
-    let expected_phrase = Phrase {
+    let expected_phrase = Anagram {
       has_errors: true,
       original: "test",
       word_counts: word_counts,
     };
-    let mut phrase = Phrase::new("test");
-    assert_eq!(true, phrase.decrement(&Phrase::new("tettt")).is_err());
+    let mut phrase = Anagram::new("test");
+    assert_eq!(true, phrase.decrement(&Anagram::new("tettt")).is_err());
   }
 
   #[test]
   fn it_has_is_exhausted() {
-    let mut phrase = Phrase::new("test");
+    let mut phrase = Anagram::new("test");
     assert_eq!(false, phrase.is_exhausted());
-    phrase.decrement(&Phrase::new("tset"));
+    phrase.decrement(&Anagram::new("tset"));
     assert_eq!(true, phrase.is_exhausted());
   }
 
   #[test]
   fn it_filters_eligible() {
-    let mut phrase = Phrase::new("test");
+    let mut phrase = Anagram::new("test");
     assert_eq!(false, phrase.is_exhausted());
-    phrase.decrement(&Phrase::new("tset"));
+    phrase.decrement(&Anagram::new("tset"));
     assert_eq!(true, phrase.is_exhausted());
   }
 }
