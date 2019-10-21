@@ -74,13 +74,13 @@ impl<'a> Phrase<'a> {
       .collect()
   }
 
-  fn get_recursive_anagrams(
-    &self,
-    dictionary: &HashSet<&Phrase>,
-    candidates: HashSet<&Phrase>,
-  ) -> Vec<HashSet<&Phrase>> {
+  fn get_recursive_anagrams<'b>(
+    &'b self,
+    dictionary: &HashSet<&'b Phrase<'a>>,
+    candidates: HashSet<&'b Phrase<'a>>,
+  ) -> Vec<HashSet<&'b Phrase>> {
     if self.is_exhausted() {
-      let anagram_completed = Vec::new();
+      let mut anagram_completed = Vec::new();
       anagram_completed.push(candidates);
       return anagram_completed;
     }
@@ -94,7 +94,7 @@ impl<'a> Phrase<'a> {
       .iter()
       .cloned()
       .filter_map(|p| {
-        let cloned_start = self.clone();
+        let mut cloned_start = self.clone();
         let result = cloned_start.decrement(p);
         if result.is_ok() {
           Some(((cloned_start, p), p))
