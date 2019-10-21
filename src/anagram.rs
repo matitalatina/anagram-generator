@@ -55,6 +55,7 @@ impl<'a> Phrase<'a> {
       }
       *counter -= count_to_decrement;
     }
+    self.word_counts.retain(|_, c| *c > 0);
     Ok(self)
   }
 
@@ -78,8 +79,41 @@ impl<'a> Phrase<'a> {
     dictionary: &HashSet<&Phrase>,
     candidates: HashSet<&Phrase>,
   ) -> Vec<HashSet<&Phrase>> {
-    let anagrams: Vec<HashSet<&Phrase>> = Vec::new();
-    anagrams
+    if self.is_exhausted() {
+      let anagram_completed = Vec::new();
+      anagram_completed.push(candidates);
+      return anagram_completed;
+    }
+    let eligible_dictionary: HashSet<&Phrase> = dictionary
+      .iter()
+      .cloned()
+      .filter(|d| self.is_candidate_for_anagram(d))
+      .collect();
+
+    let (anagrams, new_candidates): (Vec<_>, Vec<_>) = eligible_dictionary
+      .iter()
+      .cloned()
+      .filter_map(|p| {
+        let cloned_start = self.clone();
+        let result = cloned_start.decrement(p);
+        if result.is_ok() {
+          Some(((cloned_start, p), p))
+        } else {
+          None
+        }
+      })
+      .unzip();
+
+    let new_candidates_hash = HashSet::from_iter(new_candidates.iter().cloned());
+
+    let mut all_anagrams = Vec::new();
+    for result in anagrams.iter().map(|(a, new_entry)| {
+      candidates.insert(new_entry);
+      a.get_recursive_anagrams(&new_candidates_hash, candidates)
+    }) {
+      all_anagrams.extend(result);
+    }
+    all_anagrams
   }
 
   fn is_exhausted(&self) -> bool {
@@ -129,8 +163,6 @@ mod tests {
   #[test]
   fn it_should_decrement_phrase() {
     let mut word_counts = HashMap::new();
-    word_counts.insert('t', 0);
-    word_counts.insert('e', 0);
     word_counts.insert('s', 1);
     let expected_phrase = Phrase {
       has_errors: false,
