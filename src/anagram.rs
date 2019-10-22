@@ -59,7 +59,7 @@ impl<'a> Phrase<'a> {
     Ok(self)
   }
 
-  fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> Vec<Vec<&'a str>> {
+  fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> HashSet<Vec<&'a str>> {
     let dictionary: HashSet<Phrase> = dictionary
       .iter()
       .map(|d| Phrase::new(d))
@@ -67,11 +67,16 @@ impl<'a> Phrase<'a> {
       .collect();
 
     let dictionary_ref: HashSet<_> = dictionary.iter().collect();
-    self
+    let hashed_candidates: HashMap<String, Vec<&'a str>> = self
       .get_recursive_anagrams(&dictionary_ref, Vec::new())
       .iter()
       .map(|c| c.iter().map(|p| p.original).collect())
-      .collect()
+      .map(|mut c: Vec<&'a str>| {
+        c.sort();
+        (c.join(","), c)
+      })
+      .collect();
+    hashed_candidates.into_iter().map(|(_, v)| v).collect()
   }
 
   fn get_recursive_anagrams<'b>(
@@ -198,9 +203,9 @@ mod tests {
       .iter()
       .cloned()
       .collect();
-    let mut expected_anagram: Vec<Vec<&str>> = Vec::new();
-    expected_anagram.push(vec!["matita", "latina"]);
-    expected_anagram.push(vec!["ama", "latitanti"]);
+    let mut expected_anagram: HashSet<Vec<&str>> = HashSet::new();
+    expected_anagram.insert(vec!["latina", "matita"]);
+    expected_anagram.insert(vec!["ama", "latitanti"]);
     assert_eq!(expected_anagram, phrase.get_anagrams(&dictionary));
   }
 
