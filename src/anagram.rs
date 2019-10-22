@@ -59,7 +59,7 @@ impl<'a> Phrase<'a> {
     Ok(self)
   }
 
-  fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> Vec<HashSet<&'a str>> {
+  fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> Vec<Vec<&'a str>> {
     let dictionary: HashSet<Phrase> = dictionary
       .iter()
       .map(|d| Phrase::new(d))
@@ -68,7 +68,7 @@ impl<'a> Phrase<'a> {
 
     let dictionary_ref: HashSet<_> = dictionary.iter().collect();
     self
-      .get_recursive_anagrams(&dictionary_ref, HashSet::new())
+      .get_recursive_anagrams(&dictionary_ref, Vec::new())
       .iter()
       .map(|c| c.iter().map(|p| p.original).collect())
       .collect()
@@ -77,8 +77,8 @@ impl<'a> Phrase<'a> {
   fn get_recursive_anagrams<'b>(
     &self,
     dictionary: &HashSet<&'b Phrase<'a>>,
-    candidates: HashSet<&'b Phrase<'a>>,
-  ) -> Vec<HashSet<&'b Phrase<'a>>> {
+    candidates: Vec<&'b Phrase<'a>>,
+  ) -> Vec<Vec<&'b Phrase<'a>>> {
     if self.is_exhausted() {
       let mut anagram_completed = Vec::new();
       anagram_completed.push(candidates);
@@ -109,8 +109,8 @@ impl<'a> Phrase<'a> {
     let processed_anagrams: Vec<_> = anagrams
       .iter()
       .map(|(a, new_entry)| {
-        let mut candidates_with_new_entry = candidates.iter().cloned().collect::<HashSet<_>>();
-        candidates_with_new_entry.insert(new_entry);
+        let mut candidates_with_new_entry = candidates.iter().cloned().collect::<Vec<_>>();
+        candidates_with_new_entry.push(new_entry);
         a.get_recursive_anagrams(&new_candidates_hash, candidates_with_new_entry)
       })
       .flatten()
@@ -198,9 +198,9 @@ mod tests {
       .iter()
       .cloned()
       .collect();
-    let mut expected_anagram: Vec<HashSet<&str>> = Vec::new();
-    expected_anagram.push(["matita", "latina"].iter().cloned().collect());
-    expected_anagram.push(["ama", "latitanti"].iter().cloned().collect());
+    let mut expected_anagram: Vec<Vec<&str>> = Vec::new();
+    expected_anagram.push(vec!["matita", "latina"]);
+    expected_anagram.push(vec!["ama", "latitanti"]);
     assert_eq!(expected_anagram, phrase.get_anagrams(&dictionary));
   }
 
