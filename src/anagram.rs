@@ -22,7 +22,7 @@ impl Hash for Phrase<'_> {
 }
 
 impl<'a> Phrase<'a> {
-  fn new(original: &'a str) -> Self {
+  pub fn new(original: &'a str) -> Self {
     Phrase {
       has_errors: false,
       original: original,
@@ -59,7 +59,7 @@ impl<'a> Phrase<'a> {
     Ok(self)
   }
 
-  fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> HashSet<Vec<&'a str>> {
+  pub fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> HashSet<Vec<&'a str>> {
     let dictionary: HashSet<Phrase> = dictionary
       .iter()
       .map(|d| Phrase::new(d))
