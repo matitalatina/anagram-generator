@@ -75,10 +75,10 @@ impl<'a> Phrase<'a> {
   }
 
   fn get_recursive_anagrams<'b>(
-    &'b self,
+    &self,
     dictionary: &HashSet<&'b Phrase<'a>>,
     candidates: HashSet<&'b Phrase<'a>>,
-  ) -> Vec<HashSet<&'b Phrase>> {
+  ) -> Vec<HashSet<&'b Phrase<'a>>> {
     if self.is_exhausted() {
       let mut anagram_completed = Vec::new();
       anagram_completed.push(candidates);
@@ -106,14 +106,16 @@ impl<'a> Phrase<'a> {
 
     let new_candidates_hash = HashSet::from_iter(new_candidates.iter().cloned());
 
-    let mut all_anagrams = Vec::new();
-    for result in anagrams.iter().map(|(a, new_entry)| {
-      candidates.insert(new_entry);
-      a.get_recursive_anagrams(&new_candidates_hash, candidates)
-    }) {
-      all_anagrams.extend(result);
-    }
-    all_anagrams
+    let processed_anagrams: Vec<_> = anagrams
+      .iter()
+      .map(|(a, new_entry)| {
+        let mut candidates_with_new_entry = candidates.iter().cloned().collect::<HashSet<_>>();
+        candidates_with_new_entry.insert(new_entry);
+        a.get_recursive_anagrams(&new_candidates_hash, candidates_with_new_entry)
+      })
+      .flatten()
+      .collect();
+    processed_anagrams
   }
 
   fn is_exhausted(&self) -> bool {
