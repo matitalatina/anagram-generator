@@ -11,7 +11,7 @@ fn main() {
         .filter(|w| w.chars().count() > 5)
         .collect();
     let voc_ref: HashSet<&str> = vocabulary.iter().map(|v| &v[..]).collect();
-    for r in anagram::Phrase::new("paola pesenti gritti").get_anagrams(&voc_ref) {
+    for r in anagram::Phrase::new("mattia natali").get_anagrams(&voc_ref) {
         if (r.len() <= 2) {
             println!("{:?}", r)
         }
