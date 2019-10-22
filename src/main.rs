@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+extern crate rayon;
 mod anagram;
 
 fn main() {
@@ -8,12 +9,10 @@ fn main() {
     let vocabulary: HashSet<String> = BufReader::new(input)
         .lines()
         .map(|l| l.unwrap())
-        .filter(|w| w.chars().count() > 5)
+        .filter(|w| w.chars().count() > 2)
         .collect();
     let voc_ref: HashSet<&str> = vocabulary.iter().map(|v| &v[..]).collect();
     for r in anagram::Phrase::new("mattia natali").get_anagrams(&voc_ref) {
-        if (r.len() <= 2) {
-            println!("{:?}", r)
-        }
+        println!("{:?}", r)
     }
 }

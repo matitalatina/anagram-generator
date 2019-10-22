@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::hash::{Hash, Hasher};
@@ -10,7 +11,6 @@ pub enum PhraseError {
 
 #[derive(PartialEq, Debug, Clone, Eq)]
 pub struct Phrase<'a> {
-  has_errors: bool,
   original: &'a str,
   word_counts: HashMap<char, u32>,
 }
@@ -24,7 +24,6 @@ impl Hash for Phrase<'_> {
 impl<'a> Phrase<'a> {
   pub fn new(original: &'a str) -> Self {
     Phrase {
-      has_errors: false,
       original: original,
       word_counts: original
         .to_lowercase()
@@ -50,7 +49,6 @@ impl<'a> Phrase<'a> {
       let old_counter = *counter;
       let count_to_decrement = *phrase.word_counts.get(c).unwrap_or(&0);
       if count_to_decrement > old_counter {
-        self.has_errors = true;
         return Err(PhraseError::NotPhrase);
       }
       *counter -= count_to_decrement;
@@ -112,7 +110,7 @@ impl<'a> Phrase<'a> {
     let new_candidates_hash = HashSet::from_iter(new_candidates.iter().cloned());
 
     let processed_anagrams: Vec<_> = anagrams
-      .iter()
+      .par_iter()
       .map(|(a, new_entry)| {
         let mut candidates_with_new_entry = candidates.iter().cloned().collect::<Vec<_>>();
         candidates_with_new_entry.push(new_entry);
@@ -146,7 +144,6 @@ mod tests {
     word_counts.insert('e', 1);
     word_counts.insert('s', 1);
     let expected_phrase = Phrase {
-      has_errors: false,
       original: "test",
       word_counts: word_counts,
     };
@@ -160,7 +157,6 @@ mod tests {
     word_counts.insert('e', 1);
     word_counts.insert('s', 1);
     let expected_phrase = Phrase {
-      has_errors: false,
       original: "Te St",
       word_counts: word_counts,
     };
@@ -172,7 +168,6 @@ mod tests {
     let mut word_counts = HashMap::new();
     word_counts.insert('s', 1);
     let expected_phrase = Phrase {
-      has_errors: false,
       original: "test",
       word_counts: word_counts,
     };
