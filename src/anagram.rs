@@ -87,16 +87,13 @@ impl<'a> Phrase<'a> {
       anagram_completed.push(candidates);
       return anagram_completed;
     }
-    let eligible_dictionary: HashSet<&Phrase> = dictionary
-      .iter()
-      .cloned()
-      .filter(|d| self.is_candidate_for_anagram(d))
-      .collect();
-
-    let (anagrams, new_candidates): (Vec<_>, Vec<_>) = eligible_dictionary
+    let (anagrams, new_candidates): (Vec<_>, HashSet<_>) = dictionary
       .iter()
       .cloned()
       .filter_map(|p| {
+        if !self.is_candidate_for_anagram(p) {
+          return None;
+        }
         let mut cloned_start = self.clone();
         let result = cloned_start.decrement(p);
         if result.is_ok() {
@@ -107,14 +104,12 @@ impl<'a> Phrase<'a> {
       })
       .unzip();
 
-    let new_candidates_hash = HashSet::from_iter(new_candidates.iter().cloned());
-
     let processed_anagrams: Vec<_> = anagrams
       .par_iter()
       .map(|(a, new_entry)| {
         let mut candidates_with_new_entry = candidates.iter().cloned().collect::<Vec<_>>();
         candidates_with_new_entry.push(new_entry);
-        a.get_recursive_anagrams(&new_candidates_hash, candidates_with_new_entry)
+        a.get_recursive_anagrams(&new_candidates, candidates_with_new_entry)
       })
       .flatten()
       .collect();

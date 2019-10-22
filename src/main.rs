@@ -9,7 +9,7 @@ fn main() {
     let vocabulary: HashSet<String> = BufReader::new(input)
         .lines()
         .map(|l| l.unwrap())
-        .filter(|w| w.chars().count() > 2)
+        .filter(|w| w.chars().count() > 3)
         .collect();
     let voc_ref: HashSet<&str> = vocabulary.iter().map(|v| &v[..]).collect();
     for r in anagram::Phrase::new("mattia natali").get_anagrams(&voc_ref) {
