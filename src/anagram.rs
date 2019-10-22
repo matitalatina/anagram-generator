@@ -22,10 +22,10 @@ impl Hash for Phrase<'_> {
 }
 
 impl<'a> Phrase<'a> {
-  fn new(original: &str) -> Self {
+  fn new(original: &'a str) -> Self {
     Phrase {
       has_errors: false,
-      original: "test",
+      original: original,
       word_counts: original
         .to_lowercase()
         .chars()
@@ -59,14 +59,14 @@ impl<'a> Phrase<'a> {
     Ok(self)
   }
 
-  fn get_anagrams(&self, dictionary: &HashSet<&str>) -> Vec<HashSet<&str>> {
+  fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> Vec<HashSet<&'a str>> {
     let dictionary: HashSet<Phrase> = dictionary
       .iter()
       .map(|d| Phrase::new(d))
       .filter(|d| self.is_candidate_for_anagram(d))
       .collect();
 
-    let dictionary_ref: HashSet<&Phrase> = HashSet::from_iter(dictionary.iter());
+    let dictionary_ref: HashSet<_> = dictionary.iter().collect();
     self
       .get_recursive_anagrams(&dictionary_ref, HashSet::new())
       .iter()
