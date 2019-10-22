@@ -156,7 +156,7 @@ mod tests {
     word_counts.insert('s', 1);
     let expected_phrase = Phrase {
       has_errors: false,
-      original: "test",
+      original: "Te St",
       word_counts: word_counts,
     };
     assert_eq!(expected_phrase, Phrase::new("Te St"))
