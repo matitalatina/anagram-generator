@@ -24,7 +24,7 @@ impl Hash for Phrase<'_> {
 impl<'a> Phrase<'a> {
   pub fn new(original: &'a str) -> Self {
     Phrase {
-      original: original,
+      original,
       word_counts: original
         .to_lowercase()
         .chars()
@@ -107,7 +107,7 @@ impl<'a> Phrase<'a> {
     let processed_anagrams: Vec<_> = anagrams
       .par_iter()
       .map(|(a, new_entry)| {
-        let mut candidates_with_new_entry = candidates.iter().cloned().collect::<Vec<_>>();
+        let mut candidates_with_new_entry = candidates.to_vec();
         candidates_with_new_entry.push(new_entry);
         a.get_recursive_anagrams(&new_candidates, candidates_with_new_entry)
       })
@@ -117,7 +117,7 @@ impl<'a> Phrase<'a> {
   }
 
   fn is_exhausted(&self) -> bool {
-    self.word_counts.len() == 0
+    self.word_counts.is_empty()
   }
 }
 
@@ -140,7 +140,7 @@ mod tests {
     word_counts.insert('s', 1);
     let expected_phrase = Phrase {
       original: "test",
-      word_counts: word_counts,
+      word_counts,
     };
     assert_eq!(expected_phrase, Phrase::new("test"))
   }
@@ -153,7 +153,7 @@ mod tests {
     word_counts.insert('s', 1);
     let expected_phrase = Phrase {
       original: "Te St",
-      word_counts: word_counts,
+      word_counts,
     };
     assert_eq!(expected_phrase, Phrase::new("Te St"))
   }
@@ -164,7 +164,7 @@ mod tests {
     word_counts.insert('s', 1);
     let expected_phrase = Phrase {
       original: "test",
-      word_counts: word_counts,
+      word_counts,
     };
     assert_eq!(
       expected_phrase,
