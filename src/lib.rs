@@ -1,2 +1,2 @@
-mod anagram;
+pub mod anagram;
 extern crate rayon;
