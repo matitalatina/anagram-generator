@@ -117,7 +117,7 @@ impl<'a> Phrase<'a> {
   }
 
   fn is_exhausted(&self) -> bool {
-    self.word_counts.values().fold(0, |acc, c| acc + c) == 0
+    self.word_counts.len() == 0
   }
 }
 
