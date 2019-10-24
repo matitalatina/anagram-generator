@@ -39,6 +39,9 @@ impl<'a> Phrase<'a> {
   }
 
   fn is_candidate_for_anagram(&self, anagram_to_check: &Phrase) -> bool {
+    if anagram_to_check.word_counts.len() > self.word_counts.len() {
+      return false;
+    }
     let other_word_set: HashSet<&char> = HashSet::from_iter(anagram_to_check.word_counts.keys());
     let this_word_set = HashSet::from_iter(self.word_counts.keys());
     other_word_set.is_subset(&this_word_set)
@@ -68,10 +71,10 @@ impl<'a> Phrase<'a> {
     let hashed_candidates: HashMap<String, Vec<&'a str>> = self
       .get_recursive_anagrams(&dictionary_ref, Vec::new())
       .iter()
-      .map(|c| c.iter().map(|p| p.original).collect())
-      .map(|mut c: Vec<&'a str>| {
-        c.sort();
-        (c.join(","), c)
+      .map(|c| {
+        let mut str_candidates = c.iter().map(|p| p.original).collect::<Vec<_>>();
+        str_candidates.sort();
+        (str_candidates.join(","), str_candidates)
       })
       .collect();
     hashed_candidates.into_iter().map(|(_, v)| v).collect()
