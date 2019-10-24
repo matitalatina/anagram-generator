@@ -44,13 +44,11 @@ fn main() {
         .get_matches();
     let dictionary_path = args.value_of("dictionary_path").unwrap();
     let input = File::open(dictionary_path).unwrap();
-    let bad_words = File::open("assets/lista_badwords.txt").unwrap();
     let max_word_count = value_t!(args.value_of("max_words_count"), usize).unwrap();
     let min_chars_count = value_t!(args.value_of("min_chars_count"), usize).unwrap();
     let input_anagram = args.value_of("anagram").unwrap();
     let vocabulary: HashSet<String> = BufReader::new(input)
         .lines()
-        .chain(BufReader::new(bad_words).lines())
         .map(|l| l.unwrap())
         .filter(|w| w.chars().count() > min_chars_count)
         .collect();
