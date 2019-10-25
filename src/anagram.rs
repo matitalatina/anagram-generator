@@ -61,13 +61,13 @@ impl<'a> Phrase<'a> {
   }
 
   pub fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> HashSet<Vec<&'a str>> {
-    let dictionary: HashSet<Phrase> = dictionary
+    let dictionary: Vec<Phrase> = dictionary
       .iter()
       .map(|d| Phrase::new(d))
       .filter(|d| self.is_candidate_for_anagram(d))
       .collect();
 
-    let dictionary_ref: HashSet<_> = dictionary.iter().collect();
+    let dictionary_ref: Vec<_> = dictionary.iter().collect();
     let hashed_candidates: HashMap<String, Vec<&'a str>> = self
       .get_recursive_anagrams(&dictionary_ref, Vec::new())
       .iter()
@@ -82,7 +82,7 @@ impl<'a> Phrase<'a> {
 
   fn get_recursive_anagrams<'b>(
     &self,
-    dictionary: &HashSet<&'b Phrase<'a>>,
+    dictionary: &Vec<&'b Phrase<'a>>,
     candidates: Vec<&'b Phrase<'a>>,
   ) -> Vec<Vec<&'b Phrase<'a>>> {
     if self.is_exhausted() {
@@ -90,7 +90,7 @@ impl<'a> Phrase<'a> {
       anagram_completed.push(candidates);
       return anagram_completed;
     }
-    let (anagrams, new_candidates): (Vec<_>, HashSet<_>) = dictionary
+    let (anagrams, new_candidates): (Vec<_>, Vec<_>) = dictionary
       .iter()
       .cloned()
       .filter_map(|p| {
