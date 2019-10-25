@@ -60,7 +60,7 @@ impl<'a> Phrase<'a> {
     Ok(self)
   }
 
-  pub fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> HashSet<Vec<&'a str>> {
+  pub fn get_anagrams(&self, dictionary: &HashSet<&'a str>) -> Vec<Vec<&'a str>> {
     let dictionary: Vec<Phrase> = dictionary
       .iter()
       .map(|d| Phrase::new(d))
@@ -68,21 +68,20 @@ impl<'a> Phrase<'a> {
       .collect();
 
     let dictionary_ref: Vec<_> = dictionary.iter().collect();
-    let hashed_candidates: HashMap<String, Vec<&'a str>> = self
+    self
       .get_recursive_anagrams(&dictionary_ref, Vec::new())
       .iter()
       .map(|c| {
-        let mut str_candidates = c.iter().map(|p| p.original).collect::<Vec<_>>();
-        str_candidates.sort();
-        (str_candidates.join(","), str_candidates)
+        let mut anagram_str = c.iter().map(|p| p.original).collect::<Vec<_>>();
+        anagram_str.sort();
+        anagram_str
       })
-      .collect();
-    hashed_candidates.into_iter().map(|(_, v)| v).collect()
+      .collect()
   }
 
   fn get_recursive_anagrams<'b>(
     &self,
-    dictionary: &Vec<&'b Phrase<'a>>,
+    dictionary: &[&'b Phrase<'a>],
     candidates: Vec<&'b Phrase<'a>>,
   ) -> Vec<Vec<&'b Phrase<'a>>> {
     if self.is_exhausted() {
@@ -109,10 +108,11 @@ impl<'a> Phrase<'a> {
 
     let processed_anagrams: Vec<_> = anagrams
       .par_iter()
-      .map(|(a, new_entry)| {
+      .enumerate()
+      .map(|(i, (a, new_entry))| {
         let mut candidates_with_new_entry = candidates.to_vec();
         candidates_with_new_entry.push(new_entry);
-        a.get_recursive_anagrams(&new_candidates, candidates_with_new_entry)
+        a.get_recursive_anagrams(&new_candidates[i..], candidates_with_new_entry)
       })
       .flatten()
       .collect();
@@ -196,10 +196,12 @@ mod tests {
       .iter()
       .cloned()
       .collect();
-    let mut expected_anagram: HashSet<Vec<&str>> = HashSet::new();
-    expected_anagram.insert(vec!["latina", "matita"]);
-    expected_anagram.insert(vec!["ama", "latitanti"]);
-    assert_eq!(expected_anagram, phrase.get_anagrams(&dictionary));
+    let mut expected_anagram: Vec<Vec<&str>> = Vec::new();
+    expected_anagram.push(vec!["ama", "latitanti"]);
+    expected_anagram.push(vec!["latina", "matita"]);
+    let anagrams = phrase.get_anagrams(&dictionary);
+    assert_eq!(2, anagrams.len());
+    assert_eq!(true, anagrams.iter().all(|a| expected_anagram.contains(a)));
   }
 
   #[test]
