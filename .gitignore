@@ -1,15 +1,1 @@
-/target
-**/*.rs.bk
-Cargo.lock
-
-pkg/
-wasm-pack.log
-
-
-#Added by cargo
-#
-#already existing elements are commented out
-
-#/target
-#**/*.rs.bk
 .idea
