@@ -1,5 +1,4 @@
 extern crate clap;
-extern crate rayon;
 mod anagram;
 
 use clap::{value_t, App, Arg};
