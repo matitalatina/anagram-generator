@@ -1,4 +1,3 @@
-use rayon::prelude::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::hash::{Hash, Hasher};
@@ -107,14 +106,14 @@ impl<'a> Phrase<'a> {
       .unzip();
 
     let processed_anagrams: Vec<_> = anagrams
-      .par_iter()
+      .iter()
       .enumerate()
-      .map(|(i, (a, new_entry))| {
+      .flat_map(|(i, (a, new_entry))| {
         let mut candidates_with_new_entry = candidates.to_vec();
         candidates_with_new_entry.push(new_entry);
         a.get_recursive_anagrams(&new_candidates[i..], candidates_with_new_entry)
       })
-      .flatten()
+      .take(100)
       .collect();
     processed_anagrams
   }
