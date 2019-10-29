@@ -12,6 +12,7 @@ const Small: React.FunctionComponent<SmallProps> = styled.small<SmallProps>`
   opacity: ${props => props.transparent ? 0.4 : 1};
   text-align: ${props => props.centered ? 'center' : 'auto'};
   font-size: 0.6rem;
+  transition: all 0.3s;
 
   &:hover {
     opacity: 1;

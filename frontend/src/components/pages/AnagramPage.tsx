@@ -1,22 +1,25 @@
-import Div from '../atoms/Div';
-import styled from 'styled-components';
-import React, { useState, useEffect } from 'react';
-import PageTemplate from '../templates/PageTemplate';
-import Small from '../atoms/Small';
-import ParticlesBackground from '../atoms/ParticlesBackground';
-import Link from '../atoms/Link';
-import Input from '../atoms/Input';
 import { get_anagram } from 'anagram';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import Button from '../atoms/Button';
-import Centered from '../atoms/Centered';
+import Div from '../atoms/Div';
+import Input from '../atoms/Input';
+import Link from '../atoms/Link';
+import ParticlesBackground from '../atoms/ParticlesBackground';
+import Small from '../atoms/Small';
+import PageTemplate from '../templates/PageTemplate';
 
-const Wrapper = styled<React.FunctionComponent<React.HTMLAttributes<HTMLDivElement>>>(Div)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-`
+const SpacedInput = styled(Input)`
+  margin: 32px 0;
+`;
+
+const SpacedDiv = styled(Div)`
+  margin: 8px 0;
+`;
+
+const SpacedButton = styled(Button)`
+  margin: 0 0 16px 0;
+`;
 
 interface IAnagramFound {
   original: string,
@@ -42,12 +45,11 @@ const AnagramPage: React.FunctionComponent = () => {
       }
       contentCentered
     >
-      <Input type="text" value={input} onChange={(event) => setInput(event.target.value)} placeholder="Frase da anagrammare..."></Input>
-      {dictionary && <Button type="button" onClick={() => onNewAnagram(setAnagrams)(input, dictionary)}>Trova {anagrams.original ? 'altri' : 'gli'} anagrammi</Button>}
-      {anagrams.original && <>Gli anagrammi di {anagrams.original} sono: <br />
-        {anagrams.anagrams.map((w, i) => <Div key={i}>{w.join(' · ')}</Div>)}
-      </>
-      }
+      <form onSubmit={(event) => {event.preventDefault(); onNewAnagram(setAnagrams)(input, dictionary)}}>
+      <SpacedInput type="text" value={input} onChange={(event) => setInput(event.target.value)} placeholder="Frase da anagrammare..."></SpacedInput>
+      </form>
+      {dictionary && <SpacedButton type="button" onClick={() => onNewAnagram(setAnagrams)(input, dictionary)}>Trova {anagrams.original ? 'altri' : 'gli'} anagrammi</SpacedButton>}
+        {anagrams.anagrams.map((w, i) => <SpacedDiv key={i}>{w.join(' · ')}</SpacedDiv>)}
         <ParticlesBackground />
     </PageTemplate>
   );
