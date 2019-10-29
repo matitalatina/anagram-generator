@@ -1,12 +1,13 @@
 import React from 'react';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import AnagramPage from './components/pages/AnagramPage';
 import theme from './themes/default';
 
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
-    font-family: ${theme.fonts.primary}
+    font-family: ${theme.fonts.primary};
+    min-height: 100%;
   }
 `
 

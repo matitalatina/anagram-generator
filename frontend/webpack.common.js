@@ -13,7 +13,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -22,7 +22,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       'src/index.html',
-      'assets/**'
+      { from: 'public/**', transformPath: (targetPath) => targetPath.substr('public/'.length) },
     ])
   ],
 };

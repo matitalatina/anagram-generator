@@ -14,6 +14,11 @@ const Input = styled.input`
   min-width: 500px;
   text-align: center;
 
+  @media screen and (max-width: 600px) {
+    min-width: 250px;
+    font-size: ${theme.fonts.sizes.normal};
+  }
+
   &:hover, &:focus {
     background-color: rgba(255, 255, 255, 0.05);
     border: solid 1px rgba(255, 255, 255, 0.8);
