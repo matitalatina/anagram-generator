@@ -1,0 +1,15 @@
+{
+  "name": "anagram-generator",
+  "collaborators": [
+    "Mattia Natali <matitalatina@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "anagram_generator_bg.wasm",
+    "anagram_generator.js",
+    "anagram_generator.d.ts"
+  ],
+  "module": "anagram_generator.js",
+  "types": "anagram_generator.d.ts",
+  "sideEffects": "false"
+}
