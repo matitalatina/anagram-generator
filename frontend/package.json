@@ -33,7 +33,7 @@
     "@types/react-dom": "16.9.3",
     "@types/react-router-dom": "^5.1.0",
     "@types/styled-components": "^4.1.20",
-    "anagram": "file:../../../Repositories/anagram-generator/algorithm/pkg",
+    "anagram": "file:../algorithm/pkg",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-particles-js": "^2.7.0",
