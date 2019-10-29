@@ -113,7 +113,7 @@ impl<'a> Phrase<'a> {
         candidates_with_new_entry.push(new_entry);
         a.get_recursive_anagrams(&new_candidates[i..], candidates_with_new_entry)
       })
-      .take(50)
+      .take(10)
       .collect();
     processed_anagrams
   }

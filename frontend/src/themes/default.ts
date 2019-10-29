@@ -8,7 +8,6 @@ const availableAccents = [
   { foreground: ['#2cf22c'], background: ['#1d2edb'] },
   { foreground: ['#9ea356'], background: ['#072658'] },
   { foreground: ['#8ba270'], background: ['#0c0d26'] },
-  { foreground: ['#4292f4'], background: ['#2b243f'] },
   { foreground: ['#b17375'], background: ['#070456'] },
   { foreground: ['#28d3ae'], background: ['#2f0e03'] },
   { foreground: ['#1190c8'], background: ['#1b0606'] },
