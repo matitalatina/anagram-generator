@@ -8,7 +8,7 @@ const styles = css`
   font-family: ${theme.fonts.primary};
   text-decoration: none;
   font-weight: 500;
-  color: ${theme.palette.grayscale[1]};
+  color: ${theme.palette.foreground};
 
   &:hover {
     text-decoration: underline;

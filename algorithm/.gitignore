@@ -2,9 +2,7 @@ target
 **/*.rs.bk
 Cargo.lock
 
-pkg/
 wasm-pack.log
-
 
 #Added by cargo
 #

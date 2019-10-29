@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import theme from "../../themes/default";
 import { ifProp } from 'styled-tools'
-import React from 'react';
+import React, {MouseEvent} from 'react';
 import Link from './Link';
 
 const styles = css`
@@ -45,6 +45,7 @@ type ButtonProps = {
   type: 'button' | 'submit' | 'reset',
   href?: string,
   to?: string,
+  onClick?: (event: MouseEvent) => void,
 }
 
 const Button: React.FunctionComponent<ButtonProps> = ({ type = 'button', ...props } = {type: 'button'}) => {
