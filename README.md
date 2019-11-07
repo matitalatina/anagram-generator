@@ -1,6 +1,6 @@
 # Anagram Generator
 
-[Live preview here.](http://anagrammi.mattianatali.it/)
+[Live preview here.](https://anagrammi.mattianatali.it/)
 
 ## Algorithm
 
